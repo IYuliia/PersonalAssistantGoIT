@@ -7,8 +7,11 @@ from .note import Note
 @dataclass
 class NoteManager:
     pickle_file = 'note_book.pickle'
-    def __init__(self):
+    def __init__(self,file_path):
+        self.file_path = Path(file_path)
         self.notes = []
+        if self.file_path.exists():
+            self.load_from_file()
             
     def save_to_file(self):
         with open(self.file_path, "wb") as file:
