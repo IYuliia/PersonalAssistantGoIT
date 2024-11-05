@@ -22,6 +22,7 @@ class AddressBook(UserDict):
             self.data = {}
 
     def add_record(self, record):
+        self.data[record.name.value] = record
 
     def find(self, name):
 

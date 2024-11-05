@@ -10,6 +10,7 @@ from utils.constants import (
     HELP_MESSAGE,
 )
 from utils.decorators import input_error
+from datetime import datetime
 
 class PersonalAssistant:
     def __init__(self):
@@ -18,6 +19,30 @@ class PersonalAssistant:
 
     @input_error
     def add_contact(self, args):
+            if len(args) < 2:
+                raise ValueError("Please provide both a name and at least one contact detail (e.g., phone number, email, etc.).")
+    
+            name = args[0]
+            contact_details = args[1:]  
+
+            record = Record(name)
+
+            for detail in contact_details:
+                if "@" in detail:  
+                    record.add_email(detail)
+                elif detail.isdigit():  
+                    record.add_phone(detail)
+                else:
+                    try:
+                        datetime.strptime(detail, "%d.%m.%Y")
+                        record.add_birthday(detail)
+                    except ValueError:
+                        record.add_address(detail)
+
+            self.address_book.add_record(record)
+            self.address_book.save_to_file()  
+
+            return f"Contact '{name}' added successfully with details: {', '.join(contact_details)}."
 
     @input_error
     def change_contact(self, args):
@@ -39,6 +64,20 @@ class PersonalAssistant:
 
     @input_error
     def add_birthday(self, args):
+        if len(args) < 2:
+            raise ValueError("Please provide both a name and a birthday (DD.MM.YYYY).")
+        
+        name, birthday = args
+        record = self.address_book.find(name)
+        
+        if not record:
+            return f"Contact '{name}' not found."
+        
+        record.add_birthday(birthday)
+        self.address_book.save_to_file()
+        
+        return f"Birthday for '{name}' set to {birthday}."
+
 
     @input_error
     def show_birthday(self, args):
