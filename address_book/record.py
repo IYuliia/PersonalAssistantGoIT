@@ -12,12 +12,20 @@ class Record:
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
 
-    def remove_phone(self, phone):
+    def __remove_phone(self, phone: Phone):
+        self.phones.remove(phone)
 
-    def edit_phone(self, old_phone, new_phone):
+    def edit_phone(self, old_phone_str, new_phone_str):
+        old_phone = self.find_phone(old_phone_str)
+        if old_phone:
+            self.__remove_phone(old_phone)
+            self.add_phone(new_phone_str)
         
     def find_phone(self, phone):
-
+        for item in self.phones:
+            if item.value == phone:
+                return item        
+        
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
 

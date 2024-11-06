@@ -25,13 +25,19 @@ class AddressBook(UserDict):
         self.data[record.name.value] = record
 
     def find(self, name):
+        return self.data.get(name, None)
 
     def delete(self, name):
+        return self.data.pop(name, None)
 
     def find_by_phone(self, phone):
+        pass
 
     def find_by_email(self, email):
+        pass
         
     def find_by_address(self, address_query):
+        pass
 
     def get_upcoming_birthdays(self, days=7):
+        pass
