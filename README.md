@@ -22,7 +22,7 @@ A command-line personal assistant that helps manage contacts and notes.
 1. Clone the repository:
 ```bash
 git clone https://github.com/whitcr/PersonalAssistantGoIT
-cd personal-assistant
+cd PersonalAssistantGoIT
 ```
 
 2. Create and activate virtual environment:
