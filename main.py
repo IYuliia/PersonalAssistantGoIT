@@ -1,6 +1,7 @@
 from pathlib import Path
 from address_book.address_book import AddressBook
 from address_book.record import Record
+from address_book.fields import Phone
 from notes.note_manager import NoteManager
 from utils.constants import (
     CONTACTS_FILE,
@@ -30,7 +31,7 @@ class PersonalAssistant:
             for detail in contact_details:
                 if "@" in detail:  
                     record.add_email(detail)
-                elif detail.isdigit():  
+                elif Phone.validate(detail):  
                     record.add_phone(detail)
                 else:
                     try:

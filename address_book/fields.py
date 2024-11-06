@@ -22,7 +22,7 @@ class Phone(Field):
 
     @staticmethod
     def validate(phone):
-        return bool(re.fullmatch(r'\d{10}', phone))
+        return bool(re.fullmatch(r'\+?\d{10,}', phone))
 
 class Birthday(Field):
     def __init__(self, value):
