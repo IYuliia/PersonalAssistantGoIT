@@ -41,5 +41,5 @@ pip install -r requirements.txt
 
 4. Run the application:
 ```bash
-python -m personal_assistant
+python main.py
 ```
