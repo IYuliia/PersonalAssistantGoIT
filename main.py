@@ -1,3 +1,5 @@
+from prompt_toolkit import PromptSession
+from prompt_toolkit.completion import WordCompleter
 from pathlib import Path
 from address_book.address_book import AddressBook
 from address_book.record import Record
@@ -18,6 +20,29 @@ class PersonalAssistant:
     def __init__(self):
         self.address_book = AddressBook(CONTACTS_FILE)
         self.note_manager = NoteManager(NOTES_FILE)
+        
+        self.commands = {
+            "add": self.add_contact,
+            "change": self.change_contact,
+            "delete": self.delete_contact,
+            "all": self.show_all_contacts,
+            "add-birthday": self.add_birthday,
+            "note-add": self.add_note,
+            "note-change": self.change_note,
+            "note-delete": self.delete_note,
+            "note-find": self.find_notes,
+            "help": self.show_help
+        }
+        
+        self.command_completer = WordCompleter(
+            list(self.commands.keys()) + ["close", "exit", "goodbye", "quit"],
+            ignore_case=True
+        )
+        
+        self.session = PromptSession(
+            completer=self.command_completer,
+            complete_while_typing=True
+        )
 
     @input_error
     def add_contact(self, args):
@@ -182,39 +207,37 @@ class PersonalAssistant:
     def run(self):
         print(WELCOME_MESSAGE)
         
-        commands = {
-            "add": self.add_contact,
-            "change": self.change_contact,
-            "delete": self.delete_contact,
-            # "search": self.search_contact,
-            "all": self.show_all_contacts,
-            "add-birthday": self.add_birthday,
-            # "show-birthday": self.show_birthday,
-            # "birthdays": self.show_birthdays,
-            "note-add": self.add_note,
-            "note-change": self.change_note,
-            "note-delete": self.delete_note,
-            "note-find": self.find_notes,
-            "help": self.show_help
-        }
-        
         while True:
-            user_input = input("Enter a command (or 'help' for help): ").strip()
-            
-            if not user_input:
-                continue
+            try:
+                user_input = self.session.prompt("Enter a command (or 'help' for help): ").strip()
                 
-            if user_input.lower() in ["close", "exit", "goodbye", "quit"]:
+                if not user_input:
+                    continue
+                    
+                if user_input.lower() in ["close", "exit", "goodbye", "quit"]:
+                    print(GOODBYE_MESSAGE)
+                    break
+                
+                command, args = self.parse_input(user_input)
+                
+                if command in self.commands:
+                    result = self.commands[command](args)
+                    print(result)
+                else:
+                    closest_matches = [cmd for cmd in self.commands.keys() 
+                                    if cmd.startswith(command[:2]) or 
+                                    any(word.startswith(command[:2]) for word in cmd.split('-'))]
+                    
+                    if closest_matches:
+                        print(f"Invalid command. Did you mean one of these? {', '.join(closest_matches)}")
+                    else:
+                        print("Invalid command. Type 'help' for available commands.")
+            
+            except KeyboardInterrupt:
+                continue
+            except EOFError:
                 print(GOODBYE_MESSAGE)
                 break
-            
-            command, args = self.parse_input(user_input)
-            
-            if command in commands:
-                result = commands[command](args)
-                print(result)
-            else:
-                print("Invalid command.")
 
 def main():
     assistant = PersonalAssistant()
