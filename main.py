@@ -9,6 +9,7 @@ from utils.constants import (
     WELCOME_MESSAGE,
     GOODBYE_MESSAGE,
     HELP_MESSAGE,
+    PHONE_DELIMITER
 )
 from utils.decorators import input_error
 from datetime import datetime
@@ -65,8 +66,8 @@ class PersonalAssistant:
             elif Phone.validate(detail):
                 record.add_phone(detail)
                 updated = True
-            elif len(detail.split("=>")) == 2:
-                old, new = detail.split("=>")
+            elif len(detail.split(PHONE_DELIMITER)) == 2:
+                old, new = detail.split(PHONE_DELIMITER)
                 if Phone.validate(old) and Phone.validate(new):
                     record.edit_phone(old, new)
                     updated = True
