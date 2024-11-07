@@ -13,9 +13,9 @@ HELP_MESSAGE = """
 Available commands:
 Contacts:
     add
-    change <old_number>|<new_number> <new@email.put> <DD.MM.YYYY> - Change data
+    change <name> [old_number|new_number]([number_to_add]) [new@email.put] [DD.MM.YYYY] [address] - Change existing contact's data
     delete <name> - Remove contact from address book
-    search
+    search <query> - Search contacts by name, phone, email and address
     all - Show all contacts
     add-birthday
     show-birthday <name> - Show contact's birthday

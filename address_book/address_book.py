@@ -30,14 +30,37 @@ class AddressBook(UserDict):
     def delete(self, name):
         return self.data.pop(name, None)
 
-    def find_by_phone(self, phone):
-        pass
+    def find_by_name(self, query, result: dict):
+        for key in self.data.keys():
+            if query.casefold() in key.casefold():
+                result[key] = self.data[key]
 
-    def find_by_email(self, email):
-        pass
+    def find_by_phone(self, query, result: dict):
+        records = self.data.values()
+        for record in records:
+            for phone in record.phones:
+                if query in phone.value:
+                    name = record.name.value
+                    if name not in result.keys():
+                        result[name] = self.data[name]
+
+    def find_by_email(self, query, result: dict):
+        records = self.data.values()
+        for record in records:
+            if query.casefold() in record.email.value.casefold():
+                name = record.name.value
+                if name not in result.keys():
+                    result[name] = self.data[name]
+
         
-    def find_by_address(self, address_query):
-        pass
+    def find_by_address(self, query, result: dict):
+        records = self.data.values()
+        for record in records:
+            if query.casefold() in record.address.value.casefold():
+                name = record.name.value
+                if name not in result.keys():
+                    result[name] = self.data[name]
+
 
     def get_upcoming_birthdays(self, days=7):
         pass

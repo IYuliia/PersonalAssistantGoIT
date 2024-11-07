@@ -1,4 +1,5 @@
 from pathlib import Path
+from colorama import Fore
 from address_book.address_book import AddressBook
 from address_book.record import Record
 from address_book.fields import Phone
@@ -103,7 +104,25 @@ class PersonalAssistant:
     
     @input_error
     def search_contact(self, args):
-        pass
+        if len(args) != 1 or len(args[0]) < 3:
+            raise ValueError("Query must contains 1 item with at least 3 symbols")
+        
+        query = args[0]
+
+        result = dict()
+        self.address_book.find_by_name(query, result)
+        self.address_book.find_by_phone(query, result)
+        self.address_book.find_by_email(query, result)
+        self.address_book.find_by_address(query, result)
+
+        result_string = "\n".join(str(record) for record in result.values())
+
+        return result_string.casefold().replace(query.casefold(), self.colorize_text(query.casefold()))
+        
+
+    def colorize_text(self, text):
+        return Fore.GREEN + text + Fore.RESET
+    
 
     @input_error
     def add_birthday(self, args):
@@ -186,7 +205,7 @@ class PersonalAssistant:
             "add": self.add_contact,
             "change": self.change_contact,
             "delete": self.delete_contact,
-            # "search": self.search_contact,
+            "search": self.search_contact,
             "all": self.show_all_contacts,
             "add-birthday": self.add_birthday,
             # "show-birthday": self.show_birthday,
