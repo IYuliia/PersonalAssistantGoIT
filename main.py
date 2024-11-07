@@ -1,6 +1,5 @@
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import WordCompleter
-from colorama import Fore
 from pathlib import Path
 from colorama import Fore
 from address_book.address_book import AddressBook
@@ -226,22 +225,6 @@ class PersonalAssistant:
 
     def run(self):
         print(WELCOME_MESSAGE)
-        
-        commands = {
-            "add": self.add_contact,
-            "change": self.change_contact,
-            "delete": self.delete_contact,
-            "search": self.search_contact,
-            "all": self.show_all_contacts,
-            "add-birthday": self.add_birthday,
-            # "show-birthday": self.show_birthday,
-            # "birthdays": self.show_birthdays,
-            "note-add": self.add_note,
-            "note-change": self.change_note,
-            "note-delete": self.delete_note,
-            "note-find": self.find_notes,
-            "help": self.show_help
-        }
         
         while True:
             try:
