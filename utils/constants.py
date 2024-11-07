@@ -11,24 +11,24 @@ WELCOME_MESSAGE = "Welcome to the personal assistant!"
 GOODBYE_MESSAGE = "Good bye!"
 HELP_MESSAGE = """
 Available commands:
-Contacts:
-    add
-    change <name> [old_number|new_number]([number_to_add]) [new@email.put] [DD.MM.YYYY] [address] - Change existing contact's data
-    delete <name> - Remove contact from address book
-    search <query> - Search contacts by name, phone, email and address
-    all - Show all contacts
-    add-birthday
-    show-birthday <name> - Show contact's birthday
-    birthdays - Show upcoming birthdays
+    Contacts:
+        add <name> - Add contact to  address book
+        change <name> [old_number|new_number]([number_to_add]) [new@email.put] [DD.MM.YYYY] [address] - Change existing contact's data
+        delete <name> - Remove contact from address book
+        search <query> - Search contacts by name, phone, email and address
+        all - Show all contacts
+        add-birthday
+        show-birthday <name> - Show contact's birthday
+        birthdays - Show upcoming birthdays
 
     Notes:
-    note-add <title> <content> [tags] - Add new note
-    note-change <title> <new_content> - Edit note
-    note-delete <title> - Delete note
-    note-find <query> - Search notes
+        note-add <title> <content> [tags] - Add new note
+        note-change <title> <new_content> - Edit note
+        note-delete <title> - Delete note
+        note-find <query> - Search notes
 
     General:
-    help - Show this help
-    exit - Exit the program
+        help - Show this help
+        exit - Exit the program
 """
 PHONE_DELIMITER = "|"
