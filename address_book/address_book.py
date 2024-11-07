@@ -51,7 +51,6 @@ class AddressBook(UserDict):
                 name = record.name.value
                 if name not in result.keys():
                     result[name] = self.data[name]
-
         
     def find_by_address(self, query, result: dict):
         records = self.data.values()
@@ -60,7 +59,6 @@ class AddressBook(UserDict):
                 name = record.name.value
                 if name not in result.keys():
                     result[name] = self.data[name]
-
 
     def get_upcoming_birthdays(self, days=7):
         pass
