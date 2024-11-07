@@ -13,7 +13,8 @@ HELP_MESSAGE = """
 Available commands:
 Contacts:
     add
-    change
+    change <old_number>|<new_number> <new@email.put> <DD.MM.YYYY> - Change data
+    delete <name> - Remove contact from address book
     search
     all - Show all contacts
     add-birthday
@@ -30,3 +31,4 @@ Contacts:
     help - Show this help
     exit - Exit the program
 """
+PHONE_DELIMITER = "|"

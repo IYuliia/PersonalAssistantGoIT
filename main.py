@@ -9,6 +9,7 @@ from utils.constants import (
     WELCOME_MESSAGE,
     GOODBYE_MESSAGE,
     HELP_MESSAGE,
+    PHONE_DELIMITER
 )
 from utils.decorators import input_error
 from datetime import datetime
@@ -47,21 +48,62 @@ class PersonalAssistant:
 
     @input_error
     def change_contact(self, args):
+        if len(args) < 2:
+            raise ValueError("Please provide both a name and at least one contact detail (e.g., phone number, email, etc.).")
     
+        name = args[0]
+
+        contact_details = args[1:]  
+
+        record = self.address_book.find(name)
+        updated_details = []
+               
+        for detail in contact_details:
+            updated = False
+            if "@" in detail:  
+                record.add_email(detail)
+                updated = True
+            elif Phone.validate(detail):
+                record.add_phone(detail)
+                updated = True
+            elif len(detail.split(PHONE_DELIMITER)) == 2:
+                old, new = detail.split(PHONE_DELIMITER)
+                if Phone.validate(old) and Phone.validate(new):
+                    record.edit_phone(old, new)
+                    updated = True
+            else:
+                try:
+                    datetime.strptime(detail, "%d.%m.%Y")
+                    record.add_birthday(detail)
+                    updated = True
+                except ValueError:
+                    record.add_address(detail)
+                    updated = True
+            
+            if updated:
+                updated_details.append(detail)
+
+        self.address_book.save_to_file()  
+
+        return f"Contact '{name}' was {'' if updated_details else 'not '}updated. Details: [{', '.join(updated_details)}]." 
+
     @input_error
     def delete_contact(self, args):
-        if len(args) != 2:
-            raise ValueError("Give me name please.")
-        name = args
+        if len(args) != 1:
+            raise ValueError("Give me exactly one name please.")
+        
+        name = args[0]
         record = self.address_book.delete(name)
+
         if record:
-            record.delete(name)
             self.address_book.save_to_file()
             return f"Contact {name} deleted."
+        
         raise KeyError()
     
     @input_error
     def search_contact(self, args):
+        pass
 
     @input_error
     def add_birthday(self, args):
@@ -82,10 +124,11 @@ class PersonalAssistant:
 
     @input_error
     def show_birthday(self, args):
+        pass
 
     @input_error
     def show_birthdays(self, args):
-
+        pass
 
     @input_error
     def add_note(self, args):
@@ -143,11 +186,11 @@ class PersonalAssistant:
             "add": self.add_contact,
             "change": self.change_contact,
             "delete": self.delete_contact,
-            "search": self.search_contact,
+            # "search": self.search_contact,
             "all": self.show_all_contacts,
             "add-birthday": self.add_birthday,
-            "show-birthday": self.show_birthday,
-            "birthdays": self.show_birthdays,
+            # "show-birthday": self.show_birthday,
+            # "birthdays": self.show_birthdays,
             "note-add": self.add_note,
             "note-change": self.change_note,
             "note-delete": self.delete_note,
