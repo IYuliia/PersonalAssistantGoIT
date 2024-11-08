@@ -47,7 +47,7 @@ class AddressBook(UserDict):
     def find_by_email(self, query, result: dict):
         records = self.data.values()
         for record in records:
-            if query.casefold() in record.email.value.casefold():
+            if record.email and query.casefold() in record.email.value.casefold():
                 name = record.name.value
                 if name not in result.keys():
                     result[name] = self.data[name]
@@ -55,7 +55,7 @@ class AddressBook(UserDict):
     def find_by_address(self, query, result: dict):
         records = self.data.values()
         for record in records:
-            if query.casefold() in record.address.value.casefold():
+            if record.address and query.casefold() in record.address.value.casefold():
                 name = record.name.value
                 if name not in result.keys():
                     result[name] = self.data[name]
