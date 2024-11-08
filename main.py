@@ -85,7 +85,7 @@ class PersonalAssistant:
 
         record = self.address_book.find(name)
         updated_details = []
-               
+        
         for detail in contact_details:
             updated = False
             if "@" in detail:  
@@ -233,11 +233,15 @@ class PersonalAssistant:
     def find_notes(self, args):
         if len(args) != 1:
             raise ValueError("Give me search query please.")
+        
         query = args[0]
         notes = self.note_manager.search_notes(query)
+        
         if not notes:
             return "No notes found."
+        
         return "\n\n".join(str(note) for note in notes)
+
 
     def show_all_contacts(self, args):
         if not self.address_book:

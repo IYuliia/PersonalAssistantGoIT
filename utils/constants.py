@@ -12,7 +12,7 @@ GOODBYE_MESSAGE = "Good bye!"
 HELP_MESSAGE = """
 Available commands:
     Contacts:
-        add <name> - Add contact to  address book
+        add <name> [number] [new@email.put] [DD.MM.YYYY] [address] - Add contact to  address book
         change <name> [old_number|new_number]([number_to_add]) [new@email.put] [DD.MM.YYYY] [address] - Change existing contact's data
         delete <name> - Remove contact from address book
         search <query> - Search contacts by name, phone, email and address
