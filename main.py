@@ -26,6 +26,7 @@ class PersonalAssistant:
             "add": self.add_contact,
             "change": self.change_contact,
             "delete": self.delete_contact,
+            "search": self.search_contact,
             "all": self.show_all_contacts,
             "add-birthday": self.add_birthday,
             "show-birthday": self.show_birthday,
@@ -85,7 +86,7 @@ class PersonalAssistant:
 
         record = self.address_book.find(name)
         updated_details = []
-        
+
         for detail in contact_details:
             updated = False
             if "@" in detail:  
