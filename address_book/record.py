@@ -37,7 +37,7 @@ class Record:
         
     def __str__(self):
         phone_str = "; ".join(p.value for p in self.phones) if self.phones else "No phone numbers"
-        birthday_str = f"Birthday: {self.birthday.value}" if self.birthday else "No birthday set"
+        birthday_str = f"Birthday: {self.birthday.value.strftime('%d.%m.%Y')}" if self.birthday else "No birthday set"
         email_str = f"Email: {self.email.value}" if self.email else "No email set"
         address_str = f"Address: {self.address.value}" if self.address else "No address set"
     
