@@ -28,6 +28,8 @@ class PersonalAssistant:
             "delete": self.delete_contact,
             "all": self.show_all_contacts,
             "add-birthday": self.add_birthday,
+            "show-birthday": self.show_birthday,
+            "birthdays": self.show_birthdays,
             "note-add": self.add_note,
             "note-change": self.change_note,
             "note-delete": self.delete_note,
@@ -168,11 +170,38 @@ class PersonalAssistant:
 
     @input_error
     def show_birthday(self, args):
-        pass
-
+        if len(args) != 1:
+            raise ValueError("Please provide exactly one contact name.")
+    
+        name = args[0]
+        record = self.address_book.find(name)
+    
+        if not record:
+            return f"Contact '{name}' not found."
+    
+        birthday = record.birthday
+        if not birthday:
+            return f"No birthday set for '{name}'."
+    
+        return f"Birthday for '{name}' is on {birthday}."
+    
     @input_error
     def show_birthdays(self, args):
-        pass
+        days = 7
+
+        if args:
+            try:
+                days = int(args[0])
+            except ValueError:
+                return "Please provide a valid number for the period in days."
+        
+        upcoming_birthdays = self.address_book.get_upcoming_birthdays(days)
+
+        if not upcoming_birthdays:
+            return f"No upcoming birthdays within the next {days} days."
+
+        birthdays_str = "\n".join(f"{name}: {birthday}" for name, birthday in upcoming_birthdays.items())
+        return f"Upcoming birthdays in the next {days} days:\n{birthdays_str}"
 
     @input_error
     def add_note(self, args):

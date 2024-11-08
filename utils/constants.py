@@ -17,9 +17,9 @@ Available commands:
         delete <name> - Remove contact from address book
         search <query> - Search contacts by name, phone, email and address
         all - Show all contacts
-        add-birthday
+        add-birthday <name> <DD.MM.YYYY> - Add a birthday to a contact
         show-birthday <name> - Show contact's birthday
-        birthdays - Show upcoming birthdays
+        birthdays [<days>] - Show upcoming birthdays within the next <days> days (default is 7 days)
 
     Notes:
         note-add <title> <content> [tags] - Add new note
