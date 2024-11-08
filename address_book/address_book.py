@@ -39,7 +39,6 @@ class AddressBook(UserDict):
         records = self.data.values()
         for record in records:
             for phone in record.phones:
-                print("here>>>", phone)
                 if query in phone.value:
                     name = record.name.value
                     if name not in result.keys():
