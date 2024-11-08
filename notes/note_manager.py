@@ -24,19 +24,21 @@ class NoteManager:
         except FileNotFoundError:
             self.notes = []
 
-    def add_note(self, note: Note):
+    def add_note(self, title: str, content: str):
+        note = Note(title, content)
         self.notes.append(note)
+        self.save_to_file()
 
-    def search_notes(self, query:str) -> Note:
-        for note in self.notes:
-            if note.title == query:
-                return note
-        return None
+    def search_notes(self, query: str) -> list[Note]:
+        results = [note for note in self.notes if query in note.title]
+        return results
+
 
     def delete_note(self, title:str) -> Note:
         for note in self.notes:
             if note.title == title:
                 self.notes.remove(note)
+                self.save_to_file()
                 return note
         return None
 
@@ -44,6 +46,7 @@ class NoteManager:
         note = self.search_notes(title)
         if note:
             note.change(new_content)
+            self.save_to_file()
         return note
     
     def list_notes(self) -> list[Note]:

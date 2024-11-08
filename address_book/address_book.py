@@ -1,5 +1,5 @@
 from collections import UserDict
-from datetime import datetime, timedelta
+from datetime import datetime
 import pickle
 from pathlib import Path
 
@@ -62,4 +62,20 @@ class AddressBook(UserDict):
                     result[name] = self.data[name]
 
     def get_upcoming_birthdays(self, days=7):
-        pass
+        today = datetime.today().date()
+        upcoming_birthdays = {}
+
+        for contact in self.data.values():
+            if contact.birthday:
+                birthday = contact.birthday.value  
+                birthday_this_year = birthday.replace(year=today.year)
+
+                if birthday_this_year < today:
+                    birthday_this_year = birthday_this_year.replace(year=today.year + 1)
+
+                if 0 <= (birthday_this_year - today).days <= days:
+                    upcoming_birthdays[contact.name.value] = birthday_this_year.strftime("%d.%m.%Y")
+
+        return upcoming_birthdays
+
+
