@@ -25,6 +25,7 @@ class PersonalAssistant:
         self.commands = {
             "add": self.add_contact,
             "change": self.change_contact,
+            "search": self.search_contact,
             "delete": self.delete_contact,
             "all": self.show_all_contacts,
             "add-birthday": self.add_birthday,
