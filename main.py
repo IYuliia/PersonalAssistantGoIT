@@ -31,7 +31,15 @@ class PersonalAssistant:
             "note-change": self.change_note,
             "note-delete": self.delete_note,
             "note-find": self.find_notes,
-            "help": self.show_help
+            "help": self.show_help,
+            "add-tag": self.add_tag,
+            "remove-tag": self.remove_tag,
+            "change-tag": self.change_tag,
+            "get-tag": self.get_tag,
+
+
+
+
         }
         
         self.command_completer = WordCompleter(
