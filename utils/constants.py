@@ -26,6 +26,13 @@ Available commands:
         note-change <title> <new_content> - Edit note
         note-delete <title> - Delete note
         note-find <query> - Search notes
+    
+    Tags:
+        tag-add <note-title> <tag> - Add tag
+        tag-delete <note-title> <tag> - Delete tag
+        tag-get <tag> - Gets all notes with as specific tag
+        change-tag <note-title> <old-tag> <new-tag> - Change tag name for a specific note
+        sort-tag <tag> - Sor notes by a specific tag
 
     General:
         help - Show this help
