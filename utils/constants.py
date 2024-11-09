@@ -12,14 +12,14 @@ GOODBYE_MESSAGE = "Good bye!"
 HELP_MESSAGE = """
 Available commands:
     Contacts:
-        add <name> - Add contact to  address book
-        change <old_number>|<new_number> / <new@email.put> / <DD.MM.YYYY> - Change data
+        add <name> [number] [new@email.put] [DD.MM.YYYY] [address] - Add contact to  address book
+        change <name> [old_number|new_number]([number_to_add]) [new@email.put] [DD.MM.YYYY] [address] - Change existing contact's data
         delete <name> - Remove contact from address book
-        search
+        search <query> - Search contacts by name, phone, email and address
         all - Show all contacts
-        add-birthday
+        add-birthday <name> <DD.MM.YYYY> - Add a birthday to a contact
         show-birthday <name> - Show contact's birthday
-        birthdays - Show upcoming birthdays
+        birthdays [<days>] - Show upcoming birthdays within the next <days> days (default is 7 days)
 
     Notes:
         note-add <title> <content> [tags] - Add new note

@@ -1,6 +1,7 @@
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import WordCompleter
 from pathlib import Path
+from colorama import Fore
 from address_book.address_book import AddressBook
 from address_book.record import Record
 from address_book.fields import Phone
@@ -25,8 +26,11 @@ class PersonalAssistant:
             "add": self.add_contact,
             "change": self.change_contact,
             "delete": self.delete_contact,
+            "search": self.search_contact,
             "all": self.show_all_contacts,
             "add-birthday": self.add_birthday,
+            "show-birthday": self.show_birthday,
+            "birthdays": self.show_birthdays,
             "note-add": self.add_note,
             "note-change": self.change_note,
             "note-delete": self.delete_note,
@@ -90,7 +94,7 @@ class PersonalAssistant:
 
         record = self.address_book.find(name)
         updated_details = []
-               
+
         for detail in contact_details:
             updated = False
             if "@" in detail:  
@@ -136,7 +140,25 @@ class PersonalAssistant:
     
     @input_error
     def search_contact(self, args):
-        pass
+        if len(args) != 1 or len(args[0]) < 3:
+            raise ValueError("Query must contains 1 item with at least 3 symbols")
+        
+        query = args[0]
+
+        result = dict()
+        self.address_book.find_by_name(query, result)
+        self.address_book.find_by_phone(query, result)
+        self.address_book.find_by_email(query, result)
+        self.address_book.find_by_address(query, result)
+
+        result_string = "\n".join(str(record) for record in result.values())
+
+        return result_string.casefold().replace(query.casefold(), self.colorize_text(query.casefold()))
+        
+
+    def colorize_text(self, text):
+        return Fore.GREEN + text + Fore.RESET
+    
 
     @input_error
     def add_birthday(self, args):
@@ -157,11 +179,38 @@ class PersonalAssistant:
 
     @input_error
     def show_birthday(self, args):
-        pass
-
+        if len(args) != 1:
+            raise ValueError("Please provide exactly one contact name.")
+    
+        name = args[0]
+        record = self.address_book.find(name)
+    
+        if not record:
+            return f"Contact '{name}' not found."
+    
+        birthday = record.birthday
+        if not birthday:
+            return f"No birthday set for '{name}'."
+    
+        return f"Birthday for '{name}' is on {birthday}."
+    
     @input_error
     def show_birthdays(self, args):
-        pass
+        days = 7
+
+        if args:
+            try:
+                days = int(args[0])
+            except ValueError:
+                return "Please provide a valid number for the period in days."
+        
+        upcoming_birthdays = self.address_book.get_upcoming_birthdays(days)
+
+        if not upcoming_birthdays:
+            return f"No upcoming birthdays within the next {days} days."
+
+        birthdays_str = "\n".join(f"{name}: {birthday}" for name, birthday in upcoming_birthdays.items())
+        return f"Upcoming birthdays in the next {days} days:\n{birthdays_str}"
 
     @input_error
     def add_note(self, args):
@@ -193,11 +242,15 @@ class PersonalAssistant:
     def find_notes(self, args):
         if len(args) != 1:
             raise ValueError("Give me search query please.")
+        
         query = args[0]
         notes = self.note_manager.search_notes(query)
+        
         if not notes:
             return "No notes found."
+        
         return "\n\n".join(str(note) for note in notes)
+
 
     def show_all_contacts(self, args):
         if not self.address_book:

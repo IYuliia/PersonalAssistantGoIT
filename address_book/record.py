@@ -1,5 +1,6 @@
 from datetime import datetime
 from .fields import Name, Phone, Birthday, Email, Address
+from utils.table_response import TableResponse
 
 class Record:
     def __init__(self, name):
@@ -36,10 +37,19 @@ class Record:
         self.address = Address(address)
         
     def __str__(self):
+        headers = ["Field", "Value"]
         phone_str = "; ".join(p.value for p in self.phones) if self.phones else "No phone numbers"
-        birthday_str = f"Birthday: {self.birthday.value}" if self.birthday else "No birthday set"
-        email_str = f"Email: {self.email.value}" if self.email else "No email set"
-        address_str = f"Address: {self.address.value}" if self.address else "No address set"
-    
-        details = [f"Name: {self.name.value}", f"Phones: {phone_str}", birthday_str, email_str, address_str]
-        return "\n".join(details)
+        birthday_str = self.birthday.value.strftime('%d.%m.%Y') if self.birthday else "No birthday set"
+        email_str = self.email.value if self.email else "No email set"
+        address_str = self.address.value if self.address else "No address set"
+
+        data = [
+            ["Name", self.name.value],
+            ["Phones", phone_str],
+            ["Birthday", birthday_str],
+            ["Email", email_str],
+            ["Address", address_str]
+        ]
+
+        table = TableResponse(headers, data)
+        return repr(table)
