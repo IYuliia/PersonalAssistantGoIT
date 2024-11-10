@@ -42,10 +42,6 @@ class PersonalAssistant:
             "change-tag": self.change_tag,
             "get-tag": self.get_tag,
             "sort-tag": self.sort_tag
-
-
-
-
         }
         
         self.command_completer = WordCompleter(
@@ -70,11 +66,11 @@ class PersonalAssistant:
         if isinstance(notes, list):
             for note in notes:
                 note.add_tag(tag)
-                self.address_book.save_to_file()  
+                self.note_manager.save_to_file()  
             return f"Tag '{tag}' added to {len(notes)} note(s) with title '{note_title}' successfully."
         else:
             notes.add_tag(tag)  
-            self.address_book.save_to_file()  
+            self.note_manager.save_to_file()  
             return f"Tag '{tag}' added to note '{note_title}' successfully."
         
     @input_error
@@ -96,7 +92,7 @@ class PersonalAssistant:
                     note.add_tag(new_tag)
                     updated_count += 1
             if updated_count > 1:
-                self.address_book.save_to_file()  
+                self.note_manager.save_to_file()  
                 return f"Tag '{old_tag}' changed to '{new_tag}' for {updated_count} note(s) with title '{note_title}' successfully."
             else:
                 raise ValueError(f"Tag '{old_tag}' not found in any note with title '{note_title}'.")
@@ -104,7 +100,7 @@ class PersonalAssistant:
             if old_tag in notes.tags:
                 notes.remove_tag(old_tag)
                 notes.add_tag(new_tag)
-                self.address_book.save_to_file()  
+                self.note_manager.save_to_file()  
                 return f"Tag '{old_tag}' changed to '{new_tag}' for note '{note_title}' successfully."
             else:
                 raise ValueError(f"Tag '{old_tag}' not found in note '{note_title}'.")
@@ -124,13 +120,13 @@ class PersonalAssistant:
                 if note.remove_tag(tag):
                     removed_count += 1
             if removed_count > 1:
-                self.address_book.save_to_file()  
+                self.note_manager.save_to_file()  
                 return f"Tag '{tag}' removed from {removed_count} note(s) with title '{note_title}' successfully."
             else:
                 raise ValueError(f"Tag '{tag}' not found in any note with title '{note_title}'.")
         else:
             if notes.remove_tag(tag):
-                self.address_book.save_to_file()  
+                self.note_manager.save_to_file()  
                 return f"Tag '{tag}' removed from note '{note_title}' successfully."
             else:
                 raise ValueError(f"Tag '{tag}' not found in note '{note_title}'.")
