@@ -4,7 +4,7 @@ from pathlib import Path
 from colorama import Fore
 from address_book.address_book import AddressBook
 from address_book.record import Record
-from address_book.fields import Phone
+from address_book.fields import Email, Phone
 from notes.note_manager import NoteManager
 from utils.constants import (
     CONTACTS_FILE,
@@ -17,6 +17,7 @@ from utils.constants import (
 from utils.decorators import input_error
 from datetime import datetime
 from utils.table_response import TableResponse
+from utils.validators import is_address, is_date
 
 class PersonalAssistant:
     def __init__(self):
@@ -182,17 +183,24 @@ class PersonalAssistant:
 
             record = Record(name)
 
-            for detail in contact_details:
-                if "@" in detail:  
+            i = 0
+            while i < len(contact_details):
+                detail = contact_details[i]
+                
+                if Email.validate(detail):  
                     record.add_email(detail)
                 elif Phone.validate(detail):  
                     record.add_phone(detail)
-                else:
-                    try:
-                        datetime.strptime(detail, "%d.%m.%Y")
-                        record.add_birthday(detail)
-                    except ValueError:
-                        record.add_address(detail)
+                elif is_date(detail):
+                    record.add_birthday(detail)
+                elif is_address(detail):
+                    address = detail
+                    while i + 1 < len(contact_details) and is_address(contact_details[i + 1]):
+                        i += 1
+                        address += " " + contact_details[i]
+                    record.add_address(address)
+
+                i += 1
 
             self.address_book.add_record(record)
             self.address_book.save_to_file()  
@@ -208,33 +216,37 @@ class PersonalAssistant:
 
         contact_details = args[1:]  
 
-        record = self.address_book.find(name)
+        record = self.address_book.find(name.lower())
         updated_details = []
 
-        for detail in contact_details:
+        i = 0
+        while i < len(contact_details):
+            detail = contact_details[i]
             updated = False
-            if "@" in detail:  
+
+            if Email.validate(detail):
                 record.add_email(detail)
-                updated = True
-            elif Phone.validate(detail):
-                record.add_phone(detail)
                 updated = True
             elif len(detail.split(PHONE_DELIMITER)) == 2:
                 old, new = detail.split(PHONE_DELIMITER)
                 if Phone.validate(old) and Phone.validate(new):
                     record.edit_phone(old, new)
                     updated = True
-            else:
-                try:
-                    datetime.strptime(detail, "%d.%m.%Y")
-                    record.add_birthday(detail)
-                    updated = True
-                except ValueError:
-                    record.add_address(detail)
-                    updated = True
-            
+            elif is_date(detail):
+                record.add_birthday(detail)
+                updated = True
+            elif is_address(detail):
+                address = detail
+                while i + 1 < len(contact_details) and is_address(contact_details[i + 1]):
+                    i += 1
+                    address += " " + contact_details[i]
+                record.add_address(address)
+                updated = True
+
             if updated:
                 updated_details.append(detail)
+
+            i += 1
 
         self.address_book.save_to_file()  
 
@@ -262,11 +274,14 @@ class PersonalAssistant:
         query = args[0]
 
         result = dict()
-        self.address_book.find_by_name(query, result)
-        self.address_book.find_by_phone(query, result)
-        self.address_book.find_by_email(query, result)
-        self.address_book.find_by_address(query, result)
+        self.address_book.find_by_name(query.lower(), result)
+        self.address_book.find_by_phone(query.lower(), result)
+        self.address_book.find_by_email(query.lower(), result)
+        self.address_book.find_by_address(query.lower(), result)
 
+        if not result:
+            return f"No contacts found matching '{query}'."
+    
         result_string = "\n".join(str(record) for record in result.values())
 
         return result_string.casefold().replace(query.casefold(), self.colorize_text(query.casefold()))
@@ -282,7 +297,7 @@ class PersonalAssistant:
             raise ValueError("Please provide both a name and a birthday (DD.MM.YYYY).")
         
         name, birthday = args
-        record = self.address_book.find(name)
+        record = self.address_book.find(name.lower())
         
         if not record:
             return f"Contact '{name}' not found."
@@ -299,7 +314,7 @@ class PersonalAssistant:
             raise ValueError("Please provide exactly one contact name.")
     
         name = args[0]
-        record = self.address_book.find(name)
+        record = self.address_book.find(name.lower())
     
         if not record:
             return f"Contact '{name}' not found."
