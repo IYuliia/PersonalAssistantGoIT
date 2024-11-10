@@ -64,10 +64,13 @@ class PersonalAssistant:
         notes = self.note_manager.search_notes(note_title)
 
         if isinstance(notes, list):
-            for note in notes:
-                note.add_tag(tag)
-                self.note_manager.save_to_file()  
-            return f"Tag '{tag}' added to {len(notes)} note(s) with title '{note_title}' successfully."
+            if len(notes)==0:
+                raise ValueError("There is no notes with this title.")
+            else:
+                for note in notes:
+                    note.add_tag(tag)
+                    self.note_manager.save_to_file()  
+                return f"Tag '{tag}' added to {len(notes)} note(s) with title '{note_title}' successfully."
         else:
             notes.add_tag(tag)  
             self.note_manager.save_to_file()  
@@ -330,7 +333,7 @@ class PersonalAssistant:
         if len(args) < 2:
             raise ValueError("Give me title and content please.")
         title = args[0]
-        content = args[1]
+        content = " ".join(args[1:])
         self.note_manager.add_note(title, content)
         return f"Note '{title}' added successfully."
 

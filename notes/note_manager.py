@@ -25,14 +25,18 @@ class NoteManager:
             self.notes = []
 
     def add_note(self, title: str, content: str):
+        for note in self.notes:
+            if note.title == title:
+                raise ValueError(f"A note with the title '{title}' already exists.") 
+        
         note = Note(title, content)
         self.notes.append(note)
         self.save_to_file()
 
+
     def search_notes(self, query: str) -> list[Note]:
         results = [note for note in self.notes if query in note.title]
         return results
-
 
     def delete_note(self, title:str) -> Note:
         for note in self.notes:
@@ -43,8 +47,9 @@ class NoteManager:
         return None
 
     def edit_note(self, title:str, new_content:str) -> Note:
-        note = self.search_notes(title)
-        if note:
+        notes = self.search_notes(title)
+        if notes:
+            note = notes[0]
             note.change(new_content)
             self.save_to_file()
         return note

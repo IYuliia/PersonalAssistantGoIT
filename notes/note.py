@@ -3,7 +3,7 @@ from address_book.fields import Field
 from utils.table_response import TableResponse
 
 class Note(Field):
-    def __init__(self, title: str, content: str, tags: list[str]=None):
+    def __init__(self, title: str, content: str):
         super().__init__(content)
         self.title = title
         self.tags = []

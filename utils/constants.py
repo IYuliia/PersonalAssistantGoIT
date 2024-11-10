@@ -4,6 +4,7 @@ BASE_DIR = Path(__file__).parent.parent
 DATA_DIR = BASE_DIR / "data"
 CONTACTS_FILE = DATA_DIR / "contacts.pkl"
 NOTES_FILE = DATA_DIR / "notes.pkl"
+PHONE_DELIMITER = "|"
 
 DATA_DIR.mkdir(exist_ok=True)
 
@@ -38,4 +39,3 @@ Available commands:
         help - Show this help
         exit - Exit the program
 """
-PHONE_DELIMITER = "|"
