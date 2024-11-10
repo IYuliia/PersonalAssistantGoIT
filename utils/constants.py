@@ -22,10 +22,17 @@ Available commands:
         birthdays [<days>] - Show upcoming birthdays within the next <days> days (default is 7 days)
 
     Notes:
-        note-add <title> <content> [tags] - Add new note
+        note-add <title> <content> - Add new note
         note-change <title> <new_content> - Edit note
         note-delete <title> - Delete note
         note-find <query> - Search notes
+    
+    Tags:
+        add-tag <note-title> <tag> - Add tag
+        remove-tag <note-title> <tag> - Delete tag
+        get-tag <tag> - Gets all notes with as specific tag
+        change-tag <note-title> <old-tag> <new-tag> - Change tag name for a specific note
+        sort-tag <tag> - Sor notes by a specific tag
 
     General:
         help - Show this help

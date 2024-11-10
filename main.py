@@ -16,6 +16,7 @@ from utils.constants import (
 )
 from utils.decorators import input_error
 from datetime import datetime
+from utils.table_response import TableResponse
 
 class PersonalAssistant:
     def __init__(self):
@@ -35,7 +36,12 @@ class PersonalAssistant:
             "note-change": self.change_note,
             "note-delete": self.delete_note,
             "note-find": self.find_notes,
-            "help": self.show_help
+            "help": self.show_help,
+            "add-tag": self.add_tag,
+            "remove-tag": self.remove_tag,
+            "change-tag": self.change_tag,
+            "get-tag": self.get_tag,
+            "sort-tag": self.sort_tag
         }
         
         self.command_completer = WordCompleter(
@@ -47,6 +53,121 @@ class PersonalAssistant:
             completer=self.command_completer,
             complete_while_typing=True
         )
+
+    @input_error
+    def add_tag(self, args: list):
+        if len(args) < 2:
+            raise ValueError("Please provide note title and at least one tag.")
+        
+        note_title = args[0]
+        tag = " ".join(args[1:])
+        notes = self.note_manager.search_notes(note_title)
+
+        if isinstance(notes, list):
+            for note in notes:
+                note.add_tag(tag)
+                self.note_manager.save_to_file()  
+            return f"Tag '{tag}' added to {len(notes)} note(s) with title '{note_title}' successfully."
+        else:
+            notes.add_tag(tag)  
+            self.note_manager.save_to_file()  
+            return f"Tag '{tag}' added to note '{note_title}' successfully."
+        
+    @input_error
+    def change_tag(self, args: list):
+        if len(args) != 3:
+            raise ValueError("Please provide note title, old tag and new tag.")
+        
+        note_title, old_tag, new_tag = args[0], args[1], args[2]
+        notes = self.note_manager.search_notes(note_title)
+        
+        if not notes:
+            raise KeyError(f"Note '{note_title}' not found.")
+    
+        if isinstance(notes, list):
+            updated_count = 0
+            for note in notes:
+                if old_tag in note.tags:
+                    note.remove_tag(old_tag)
+                    note.add_tag(new_tag)
+                    updated_count += 1
+            if updated_count > 1:
+                self.note_manager.save_to_file()  
+                return f"Tag '{old_tag}' changed to '{new_tag}' for {updated_count} note(s) with title '{note_title}' successfully."
+            else:
+                raise ValueError(f"Tag '{old_tag}' not found in any note with title '{note_title}'.")
+        else:
+            if old_tag in notes.tags:
+                notes.remove_tag(old_tag)
+                notes.add_tag(new_tag)
+                self.note_manager.save_to_file()  
+                return f"Tag '{old_tag}' changed to '{new_tag}' for note '{note_title}' successfully."
+            else:
+                raise ValueError(f"Tag '{old_tag}' not found in note '{note_title}'.")
+        
+    
+    @input_error
+    def remove_tag(self, args: list):
+        if len(args) != 2:
+            raise ValueError("Please provide note title and tag which you want to remove.")
+        
+        note_title, tag = args[0], args[1]
+        notes = self.note_manager.search_notes(note_title)
+
+        if isinstance(notes, list):
+            removed_count = 0
+            for note in notes:
+                if note.remove_tag(tag):
+                    removed_count += 1
+            if removed_count > 1:
+                self.note_manager.save_to_file()  
+                return f"Tag '{tag}' removed from {removed_count} note(s) with title '{note_title}' successfully."
+            else:
+                raise ValueError(f"Tag '{tag}' not found in any note with title '{note_title}'.")
+        else:
+            if notes.remove_tag(tag):
+                self.note_manager.save_to_file()  
+                return f"Tag '{tag}' removed from note '{note_title}' successfully."
+            else:
+                raise ValueError(f"Tag '{tag}' not found in note '{note_title}'.")
+        
+    @input_error
+    def get_tag(self, args: list):
+        if not args:
+            raise ValueError("Please provide exactly one tag.")
+        
+        tag = ' '.join(args)
+        matching_notes = []
+        for note in self.note_manager.list_notes():
+            if tag in note.tags:
+                matching_notes.append(note)
+        
+        if matching_notes:
+            headers = ["Title", "Content", "Tags"]
+            body = [[note.title, note.value, ', '.join(note.tags)] for note in matching_notes]
+            table = TableResponse(headers, body)
+            return repr(table)
+        else:
+            raise ValueError(f"No notes found with tag '{tag}'.")
+        
+    @input_error
+    def sort_tag(self, args: list):
+        if not args:
+            raise ValueError("Please provide exactly one tag.")
+        
+        tag = ' '.join(args)
+        matching_notes = []
+        for note in self.note_manager.list_notes():
+            if tag in note.tags:
+                matching_notes.append(note)
+        
+        if matching_notes:
+            headers = ["Title", "Content", "Tags"]
+            body = [[note.title, note.value, ', '.join(note.tags)] for note in matching_notes]
+            table = TableResponse(headers, body)
+            return repr(table)
+        else:
+            raise ValueError(f"No notes found with tag '{tag}'.")
 
     @input_error
     def add_contact(self, args):
